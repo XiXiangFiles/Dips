@@ -476,8 +476,48 @@ FactoryUtils.getFieldsJs_ = function(block) {
  */
 FactoryUtils.getFieldsJson_ = function(block) {
   var fields = [];
+  let type="no";
+  if(block.type.includes("_2d")){
+    type=block.type;
+    block.type="ExampleCharacter";
+  }
+  if(block.type.includes("_3d")){
+    type=block.type;
+    block.type="ElephantMan";
+  }
+  if(block.type.includes("_scene")){
+    type=block.type;
+    block.type="scenes1-01";
+  }
   while (block) {
     if (!block.disabled && !block.getInheritedDisabled()) {
+      // let type=block.split("_");
+      // console.log("length=\t"+type.length);
+      // if (type.length>=2) {
+      //   switch(type[length-1]){
+      //     case '2d': 
+      //       fields.push({
+      //         type: block.type,
+      //         action: 'create-character',
+      //         dataTopic: block.getFieldValue('dataTopic'),
+      //         position_x: block.getFieldValue('position_x'),
+      //         position_y: block.getFieldValue('position_y'),
+      //         position_z: block.getFieldValue('position_z'),
+      //         initStatus: block.getFieldValue('initStatus')
+      //       });
+      //     break;
+      //     case '3d':
+      //     fields.push({
+      //         type: block.type,
+      //         action: 'create-3d-character',
+      //         dataTopic: block.getFieldValue('dataTopic'),
+      //         position_x: block.getFieldValue('position_x'),
+      //         position_y: block.getFieldValue('position_y'),
+      //         position_z: block.getFieldValue('position_z'),
+      //         initStatus: block.getFieldValue('initStatus')
+      //     });
+      //     break;
+      // }
       switch (block.type) {
         // dips insert json
         // case 'BirdMan':
@@ -503,15 +543,29 @@ FactoryUtils.getFieldsJson_ = function(block) {
 
         // character
         case 'Bear': case 'ExampleCharacter': case 'pepper':
-          fields.push({
-            type: block.type,
-            action: 'create-character',
-            dataTopic: block.getFieldValue('dataTopic'),
-            position_x: block.getFieldValue('position_x'),
-            position_y: block.getFieldValue('position_y'),
-            position_z: block.getFieldValue('position_z'),
-            initStatus: block.getFieldValue('initStatus')
-          });
+          if (type!="no") {
+            block.type=type;
+            fields.push({
+	            type: block.type,
+	            action: 'create-easycharacter',
+	            dataTopic: block.getFieldValue('dataTopic'),
+	            position_x: block.getFieldValue('position_x'),
+	            position_y: block.getFieldValue('position_y'),
+	            position_z: block.getFieldValue('position_z'),
+	            initStatus: block.getFieldValue('initStatus')
+          	});
+          }else{
+          	fields.push({
+	            type: block.type,
+	            action: 'create-character',
+	            dataTopic: block.getFieldValue('dataTopic'),
+	            position_x: block.getFieldValue('position_x'),
+	            position_y: block.getFieldValue('position_y'),
+	            position_z: block.getFieldValue('position_z'),
+	            initStatus: block.getFieldValue('initStatus')
+          	});
+          }
+          
           break;
         // case 'ExampleCharacter':
         //   fields.push({
@@ -536,15 +590,29 @@ FactoryUtils.getFieldsJson_ = function(block) {
         //   });
         //   break;
           case 'ElephantMan': case 'PirateBoy': case 'Teacher':
-            fields.push({
-              type: block.type,
-              action: 'create-3d-character',
-              dataTopic: block.getFieldValue('dataTopic'),
-              position_x: block.getFieldValue('position_x'),
-              position_y: block.getFieldValue('position_y'),
-              position_z: block.getFieldValue('position_z'),
-              initStatus: block.getFieldValue('initStatus')
-            });
+            if (type!="no") {
+              block.type=type;
+              fields.push({
+	              type: block.type,
+	              action: 'create-easycharacter',
+	              dataTopic: block.getFieldValue('dataTopic'),
+	              position_x: block.getFieldValue('position_x'),
+	              position_y: block.getFieldValue('position_y'),
+	              position_z: block.getFieldValue('position_z'),
+	              initStatus: block.getFieldValue('initStatus')
+	           });
+            }else{
+            	fields.push({
+	              type: block.type,
+	              action: 'create-3d-character',
+	              dataTopic: block.getFieldValue('dataTopic'),
+	              position_x: block.getFieldValue('position_x'),
+	              position_y: block.getFieldValue('position_y'),
+	              position_z: block.getFieldValue('position_z'),
+	              initStatus: block.getFieldValue('initStatus')
+	           });
+            }
+            
             break;
           // case 'PirateBoy':
           //   fields.push({
@@ -673,11 +741,26 @@ FactoryUtils.getFieldsJson_ = function(block) {
           });
           break;
         case 'scenes1-01':
-          fields.push({
-            type: block.type,
-            action: 'create-background',
-            initStatus: block.getFieldValue('initStatus')
-          });
+
+          if (type!="no") {
+            block.type=type;
+            fields.push({
+              type: block.type,
+              action: 'create-background',
+              initStatus: block.getFieldValue('initStatus')
+            });
+          }else{
+            fields.push({
+              type: block.type,
+              action: 'create-background',
+              initStatus: block.getFieldValue('initStatus')
+            });
+          }
+          // fields.push({
+          //   type: block.type,
+          //   action: 'create-background',
+          //   initStatus: block.getFieldValue('initStatus')
+          // });
           break;
         case 'BG_stage-01':
           fields.push({

@@ -127,7 +127,6 @@
 		});
         // $( "#rules" ).disableSelection();
     });
-
     /*
 	function add_button(Id,Class,Content)
 	function add_select(Id,Class,Content)
@@ -141,10 +140,8 @@
                 sURLVariables = sPageURL.split('&'),
                 sParameterName,
                 i;
-
                 for (i = 0; i < sURLVariables.length; i++) {
                     sParameterName = sURLVariables[i].split('=');
-
                     if (sParameterName[0] === sParam) {
                         return sParameterName[1] === undefined ? true : sParameterName[1];
                     }
@@ -158,7 +155,6 @@
         var count_forli=0;//li的總數
     	$(document).ready(function(){
             let count=0;
-
 		    $("#cloudserver").off().on('click',function(){ //點擊cloudserver
 		    	
 		    	var url = "http://140.119.163.193:8080/wise/dips";
@@ -172,9 +168,14 @@
                  var data = request.responseText; // Returned data, e.g., an HTML document.
                  if (data != null) {
                    console.log(data);
-
                    // filepick(data);
                    file=JSON.parse(data).files;
+                   
+                   file.sort();                   
+
+
+
+
                    Toptic=JSON.parse(data).modulesTopic.toUnity;
                    Host=JSON.parse(data).queue.host+":"+JSON.parse(data).queue.ws
                    // console.log("Toptic=\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"+Toptic);
@@ -207,7 +208,6 @@
                         $("#pop").css({"display":"none"});
                     });
                     $("#fileok").off().on('click',function(){
-
                     	count_forli++;
                         let link=$("#pickfile").val();
                             // let i=0;
@@ -217,13 +217,10 @@
                             cache: false,
                             success:function(data_o){
                             if (IsJsonString(data_o)) {
-
                                 let str=divide_action(data_o);
                                 $('#rules').append(str);
-
                                 }else alert("Its format is wrong.");
                                 $("#pop").css({"display":"none"});
-
                                 }
                             });
                         });
@@ -233,7 +230,6 @@
               request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
               request.send(JSON.stringify(mes));
 		    });
-
         });
         function divide_action(action_txt1){
             let action_txt=JSON.parse(action_txt1);
@@ -410,7 +406,10 @@
                 // console.log("\ncount_forli=\t"＋str);
         	}
         }
-        function demo() {
+        function sleep(ms) {
+                    return new Promise(resolve => setTimeout(resolve, ms));
+                }
+       async function demo() {
    			let inf=$.cookie('HostToptic');
    			inf=JSON.stringify(inf);
    			console.log("Inf=\t\t\t="+inf);
@@ -427,11 +426,13 @@
 		        		let message=cookie.split(";");
 			        	let pub_ip=$.cookie('Host');
 			        	let pub_topic="/group1/DipsToUnity";
-			        	let pub_client = mqtt.connect("ws://"+"140.119.163.193:9001");
+			        	let pub_client = mqtt.connect("ws://"+"140.119.163.195:10000");
 			        	for(let i=0;message.length>i;i++){
+			        		
 			        		pub_client.publish(pub_topic,message[i],0);
+					await sleep(500);
 			        	}
-			        	console.log(pub_ip+"\n"+pub_topic+"\n");
+			        	console.log("ws://140.119.163.195:10000"+"\n"+pub_topic+"\n");
 			        	// pub_client.end();
 		        	}catch(e){
 		        		alert("MQTTERR");

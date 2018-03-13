@@ -526,40 +526,6 @@
     <category name="3D Character" id="d_ch">
       <script type="text/javascript">
 
-      // var mes_ch = '{"message-type":"3d-character-list","items":[{"character_name":"ElephantMan"},{"character_name":"PirateBoy"},{"character_name":"Teacher"}]}';
-      // mes_ch = JSON.parse(mes_ch);
-      // var c = "";
-      // var cha_items_length = mes_ch.items.length;
-      // for (var i = 0; i < cha_items_length; i++) {
-      //   charactersname = mes_ch.items[i]["character_name"];
-      //   c += '<block type="'+charactersname+'"></block>';
-
-
-      // var cc = '';
-      // cc+= eval('Blockly.Blocks["'+charactersname+'"] = {'+
-      //     'init: function() {'+
-      //     // 'this.appendValueInput("Field").setCheck(null).appendField("'+ effectsArray[i] +'");'+
-      //       'this.appendDummyInput()'+
-      //       '.appendField(new Blockly.FieldImage("image/'+charactersname+'.png", 40, 40))'+
-      //       '.appendField("'+ charactersname +':");'+
-      //       'this.appendDummyInput().appendField("  position(x=")'+
-      //       '.appendField(new Blockly.FieldNumber("0.0"), "position_x")'+
-      //       '.appendField(", y=")'+
-      //       '.appendField(new Blockly.FieldNumber("0.0"), "position_y")'+
-      //       '.appendField(", z=")'+
-      //       '.appendField(new Blockly.FieldNumber("0.0"), "position_z")'+
-      //       '.appendField(")");'+
-      //       'this.appendDummyInput().appendField("  topic name=")'+
-      //       '.appendField(new Blockly.FieldTextInput("mocap-data-01"), "dataTopic");'+
-      //       'this.appendDummyInput().appendField("  initStatus = ")'+
-      //       '.appendField(new Blockly.FieldDropdown([["Visible","true"], ["Invisible","false"]]), "initStatus");'+
-      //       'this.setPreviousStatement(true, "Field");'+
-      //       'this.setNextStatement(true, "Field");'+
-      //       'this.setColour(265);'+
-      //       'this.setTooltip("Character Object");'+
-      //     '}};');
-      //   }
-      //   document.write(c);
       </script>
       <!-- <block type = "ExampleCharacter"></block>
       <block type = "pepper"></block> -->
@@ -602,32 +568,7 @@
 
     <category name="Background" id="bg">
       <script>
-      // var mes_bg = '{"message_type":"background_list","items":[{"background_name":"bg-city","description":"A Simple Demo, City View"},{"background_name":"bg-mountain","description":"A Simple Demo, Mountain View"},{"background_name":"bg-scene-1-01","description":"Little Red Hood demo, a wooden house in the middle of the ground."},{"background_name":"bg-scene-2-01","description":"Little Red Hood demo, a forest"},{"background_name":"bg-scene-3-01","description":"Little Red Hood demo, cartoon-like forest with a bridge"},{"background_name":"bg-scene-3-02","description":"Little Red Hood demo, realistic forest with a bridge"},{"background_name":"bg-scene-4-01","description":"Little Red Hood demo, a wooden house, and the sky is dark"},{"background_name":"bg-bear","description":"Little Red Hood demo, a wooden house, and the sky is dark"}]}';
-      // var mes_bg = '{"message-type":"background-list", "items":[ {"background-name":"6987913-nature-view"}, {"background-name":"bear_BG-03"}, {"background-name":"highway-bridge-side-view-wallpaper-3"}, {"background-name":"scenes1-01"}, {"background-name":"scenes2-01"}, {"background-name":"scenes3-01"}, {"background-name":"scenes3-02"}, {"background-name":"scenes4-01"}, {"background-name":"BG_stage-01"}, {"background-name":"BG_stage-02"} ]}';
-      // mes_bg = JSON.parse(mes_bg);
-      // var bg_items_length = mes_bg["items"].length;
-      // var b = "";
-      // for (var i = 0; i < bg_items_length; i++) {
-      //   backgroundname = mes_bg.items[i]["background-name"];
-
-      //   b +='<block type="'+backgroundname+'"></block>';
-
-      //   // document.getElementById("bg").innerHTML = b;
-      //     // tmp.push(backgroundname);
-      //     var bb = '';
-      //     bb+= eval('Blockly.Blocks["'+backgroundname+'"] = {'+
-      //         'init: function() {this.appendDummyInput()'+
-      //         '.appendField(new Blockly.FieldImage("image/bg/'+backgroundname+'.jpg", 60, 40))'+
-      //         '.appendField("'+ backgroundname +'");'+
-      //         'this.appendDummyInput().appendField("  initStatus = ")'+
-      //         '.appendField(new Blockly.FieldDropdown([["Visible","true"], ["Invisible","false"]]), "initStatus");'+
-      //           'this.setPreviousStatement(true, "Field");'+
-      //           'this.setNextStatement(true, "Field");'+
-      //           'this.setColour(180);'+
-      //           'this.setTooltip("Background Object");'+
-      //         '}};');
-      // }
-      // document.write(b);
+     
       </script>
     </category>
   </xml>
@@ -730,7 +671,7 @@
                       'this.setPreviousStatement(true, "Field");'+
                       'this.setNextStatement(true, "Field");'+
                       'this.setColour(65);'+
-                      'this.setTooltip("Character Object");'+
+                      'this.setTooltip("角色元件");'+
                     '}};');
                     $('#ch').append(c);
                 }else if(type=="cubeman"){
@@ -758,7 +699,7 @@
                           'this.setPreviousStatement(true, "Field");'+
                           'this.setNextStatement(true, "Field");'+
                           'this.setColour(265);'+
-                          'this.setTooltip("Character Object");'+
+                          'this.setTooltip("角色元件");'+
                         '}};');
                     $('#d_ch').append(c);
                 }else if(type=="Background"){

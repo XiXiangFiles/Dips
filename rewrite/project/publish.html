@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="js/browserMqtt.js"></script>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+	
+	<script type="text/javascript">
+		let currentLocation = document.location.href;
+		let data=currentLocation.split("?");
+		let mq=data[1].split(";");
+		var client  = mqtt.connect("ws://140.119.163.193:9001");
+		client.publish("test","test");
+		
+		
+
+
+	</script>
+</body>
+</html>

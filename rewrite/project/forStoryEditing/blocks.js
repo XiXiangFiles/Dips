@@ -58,8 +58,9 @@ Blockly.Blocks['factory_base'] = {
     this.appendValueInput('COLOUR')
         .setCheck('Colour')
         .appendField('colour');
-    this.setTooltip('Build a custom block by plugging\n' +
-        'fields, inputs and other blocks here.');
+    // this.setTooltip('Build a custom block by plugging\n' +
+    //     'fields, inputs and other blocks here.');
+    this.setTooltip('拖曳其他積木進來，即可建立自訂');
     this.setHelpUrl(
         'https://developers.google.com/blockly/guides/create-custom-blocks/block-factory');
   },
@@ -228,9 +229,10 @@ Blockly.Blocks['input_dummy'] = {
       "previousStatement": "Input",
       // "nextStatement": "Input",
       "colour": 210,
-      "tooltip": "For adding fields on a separate row with no " +
-                 "connections. Alignment options (left, right, centre) " +
-                 "apply only to multi-line fields.",
+      // "tooltip": "For adding fields on a separate row with no " +
+      //            "connections. Alignment options (left, right, centre) " +
+      //            "apply only to multi-line fields.",
+      "tooltip": "建立角色、背景與它的註解",
       "helpUrl": "https://www.youtube.com/watch?v=s2_xaEvcVI0#t=293"
     });
   }
@@ -267,7 +269,8 @@ Blockly.Blocks['field_static'] = {
         .appendField(new Blockly.FieldTextInput(''), 'TEXT');
     this.setPreviousStatement(true, 'Field');
     // this.setNextStatement(true, 'Field');
-    this.setTooltip('Static text that serves as a label.');
+    // this.setTooltip('Static text that serves as a label.');
+    this.setTooltip('文字註解');
     this.setHelpUrl('https://www.youtube.com/watch?v=s2_xaEvcVI0#t=88');
   }
 };
@@ -551,9 +554,10 @@ Blockly.Blocks['field_image'] = {
         .appendField(new Blockly.FieldTextInput('*'), 'ALT');
     this.setPreviousStatement(true, 'Field');
     this.setNextStatement(true, 'Field');
-    this.setTooltip('Static image (JPEG, PNG, GIF, SVG, BMP).\n' +
-                    'Retains aspect ratio regardless of height and width.\n' +
-                    'Alt text is for when collapsed.');
+    // this.setTooltip('Static image (JPEG, PNG, GIF, SVG, BMP).\n' +
+    //                 'Retains aspect ratio regardless of height and width.\n' +
+    //                 'Alt text is for when collapsed.');
+    this.setTooltip("圖像註解");
     this.setHelpUrl('https://www.youtube.com/watch?v=s2_xaEvcVI0#t=567');
   }
 };
@@ -779,7 +783,8 @@ Blockly.Blocks['colour_hue'] = {
         .appendField('hue:')
         .appendField(new Blockly.FieldAngle('0', this.validator), 'HUE');
     this.setOutput(true, 'Colour');
-    this.setTooltip('Paint the block with this colour.');
+    // this.setTooltip('Paint the block with this colour.');
+    this.setTooltip('改變積木顏色');
     this.setHelpUrl('https://www.youtube.com/watch?v=s2_xaEvcVI0#t=55');
   },
   validator: function(text) {

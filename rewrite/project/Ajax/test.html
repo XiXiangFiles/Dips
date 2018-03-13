@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="./browserMqtt.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.17.0/jquery.validate.js"></script>
+	<meta charset="UTF-8">
+
+	<title>MQTT TEST WebApp</title>
+</head>
+<body>
+	
+</body>
+
+<script>
+	
+	$(document).ready(function(){
+		let currentLocation = document.location.href;
+		let data=currentLocation.split("?");
+		let mq=data[1].split(";");
+		var pub_client = mqtt.connect("ws://140.119.163.193:9001");
+		pub_client.publish(mq[0],mq[1],0);
+		pub_client.end();
+                console.log(mq[1]);
+});
+
+</script> 
+</body>
+</html>
+
+

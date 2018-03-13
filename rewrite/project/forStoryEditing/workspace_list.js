@@ -236,7 +236,7 @@ effect_insert = function() {
 
 
 event_insert = function () {
-  var eventarray = ['left-hand-circle', 'left-hand-up', 'right-hand-circle', 'right-hand-up'];
+  var eventarray = ['left-hand-circle', 'left-hand-up', 'right-hand-circle', 'right-hand-up','left-hand-45-up','left-hand-90-up','right-hand-45-up','right-hand-90-up','left-hand-front-up','left-hand-front-45-up','right-hand-front-up','right-hand-front-45-up'];
   var event_block = '', event_hand = '';
   for (var i = 0; i < eventarray.length; i++) {
     event_block += '<block type="'+eventarray[i]+'"></block>';
@@ -282,7 +282,7 @@ node_insert = function () {
 
 
 preset_insert = function () {
-  var mes_pr = '{"message_type":"preset_object_list","items":[{"object_name":"GoldBall"},{"object_name":"SimpleCube"},{"object_name":"TreeObject"},{"object_name":"Explosion"},{"object_name":"Rainbow"},{"object_name":"Flame"},{"object_name":"Fish-1"},{"object_name":"Fish-2"}, {"object_name":"WhiteSmoke"}]}';
+  var mes_pr = '{"message_type":"preset_object_list","items":[{"object_name":"GoldBall"},{"object_name":"SimpleCube"},{"object_name":"TreeObject"},{"object_name":"Explosion"},{"object_name":"Rainbow"},{"object_name":"Flame"},{"object_name":"Fish-1"},{"object_name":"Fish-2"}, {"object_name":"WhiteSmoke"},{"object_name":"New Bubble"},{"object_name":"New Explosion"},{"object_name":"New Magic"},{"object_name":"New Smoke"}]}';
   // var me_s = me.split('\n');
   // var mes_pr = me_s[0];
   // console.log(mes_pr);

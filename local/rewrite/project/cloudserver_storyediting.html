@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <!-- <meta name="viewport" content="target-densitydpi=device-dpi, height=660, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
+  <title>Blockly Demo</title>
+  <!-- <script src="//code.jquery.com/jquery-3.2.1.min.js" type="text/javascript"></script> -->
+  <script src="lib/jquery-3.2.1.min.js" type="text/javascript"></script>
+  <script src="forStoryEditing/blockly_compressed.js"></script>
+  <script src="forStoryEditing/javascript_compressed.js"></script>
+  <script src="forStoryEditing/en.js"></script>
+  <script src="forStoryEditing/blocks_compressed.js"></script>
+  <!-- <script src="workspacefactory/dips_blockly.js"></script>
+  <script src="workspacefactory/dips.js"></script> -->
+  <!--copy整個資料夾-->
+  <script src="closure-library-master/closure/goog/base.js"></script>
+  <script src="forStoryEditing/factory_utils.js"></script>
+  <script src="workspacefactory/wfactory_model.js"></script>
+  <script src="forStoryEditing/standard_categories.js"></script>
+  <script src="workspacefactory/wfactory_controller.js"></script>
+  <script src="workspacefactory/wfactory_view.js"></script>
+  <script src="workspacefactory/wfactory_generator.js"></script>
+  <script src="workspacefactory/wfactory_init.js"></script>
+  <script src="forStoryEditing/block_option.js"></script>
+  <script src="forStoryEditing/factory.js"></script>
+  <script src="forStoryEditing/block_library_view.js"></script>
+  <script src="forStoryEditing/block_library_storage.js"></script>
+  <script src="forStoryEditing/block_library_controller.js"></script>
+  <script src="forStoryEditing/block_exporter_tools.js"></script>
+  <script src="forStoryEditing/block_exporter_view.js"></script>
+  <script src="forStoryEditing/block_exporter_controller.js"></script>
+  <script src="forStoryEditing/blocks.js"></script>
+  <script src="forStoryEditing/app_controller.js"></script>
+  <!-- <script src="/storage.js"></script> -->
+  <link rel="stylesheet" href="forStoryEditing/factory.css">
+  <link rel="stylesheet" href="forStoryEditing/prettify.css">
+  <script src="forStoryEditing/prettify.js"></script>
+  <script src="lib/mqttws31.js" type="text/javascript"></script>
+  <script src="lib/FileSaver.js" type="text/javascript"></script>
+  <!-- <script src="paho.js"></script> -->
+  <!-- js unity to dips -->
+  <!-- <script src="JsonModule/blockfactory_list.js"></script> -->
+  <!--原在JsonModule中-->
+  <script src="forStoryEditing/workspace_list.js"></script>
+
+</head>
+<body onbeforeunload="return blocklyFactory.confirmLeavePage()">
+      <script type="text/javascript">
+      var globalToolBoxInit = null;
+      var getUrlParameter = function getUrlParameter(sParam) {
+      var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+          sURLVariables = sPageURL.split('&'),
+          sParameterName,
+          i;
+          for (i = 0; i < sURLVariables.length; i++) {
+              sParameterName = sURLVariables[i].split('=');
+              if (sParameterName[0] === sParam) {
+                  return sParameterName[1] === undefined ? true : sParameterName[1];
+              }
+          }
+      };
+      var token = getUrlParameter("token");
+      if(token == null) {
+        alert("No data!");
+        window.location.href = "http://192.168.50.161:8080/rewrite/project/";
+      }
+
+      // if (jsonString != null) {
+        var blocklyFactory;
+        var init = function() {
+          blocklyFactory = new AppController();
+          blocklyFactory.init();
+        };
+        //window.addEventListener('load', init);
+        globalToolBoxInit = init;
+    </script>
+  <h1>
+  Blockly Demo
+    <!-- <a href="https://developers.google.com/blockly/">Blockly</a> &gt;
+    <a href="../index.html">Demos</a> &gt; Blockly Demo -->
+    <button id="helpButton" title="View documentation in new window.">
+      <span>Help</span>
+    </button>
+    <button id="demoExe"saveToBlockLibraryButton onClick='clickdemoExe();'>
+      <span>Screenplay</span>
+    </button>
+    <button id="initStart" onClick='initStart();'>
+      <span>Init</span>
+    </button>
+
+  </h1>
+  <div id="tabContainer">
+    <div id="blockFactory_tab" class="tab tabon">Block Factory</div>
+    <div id="workspaceFactory_tab" class="tab taboff">Workspace</div>
+    <div id="blocklibraryExporter_tab" style="display:none;" class="tab taboff">Block Exporter(Test)</div>
+    <div id="objectsProperties_tab" style="display:none;" class="tab taboff">Objects' Properties(Test)</div>
+  </div>
+
+  <!-- Exporter tab -->
+  <div id="blockLibraryExporter">
+    <br>
+    <p>
+      First, select blocks from your block library by clicking on them. Then, use the Export Settings form to download starter code for selected blocks.
+    </p>
+    <div id="exportSelector">
+      <br>
+      <h3>Block Selector</h3>
+      <div class="dropdown">
+        <button id="button_setBlocks">Select</button>
+        <div id="dropdownDiv_setBlocks" class="dropdown-content">
+          <a id="dropdown_addAllFromLib" title="Select all block library blocks.">All Stored in Block Library</a>
+          <a id="dropdown_addAllUsed" title="Select all block library blocks used in workspace factory.">All Used in Workspace Factory</a>
+        </div>
+        <button id="clearSelectedButton" title="Clear selected blocks.">Clear Selected</button>
+      </div>
+
+      <div id="blockSelector"></div>
+    </div>
+
+    <!-- Users may customize export settings through this form -->
+    <div id="exportSettings">
+      <br>
+      <h3> Export Settings </h3>
+      <form id="exportSettingsForm">
+
+        <div id="selectedBlocksTextContainer">
+          <p>Currently Selected:</p>
+          <p id="selectedBlocksText"></p>
+        </div>
+        <label><input type="checkbox" id="blockDefCheck">Block Definition(s)</label><br>
+        <div id="blockDefSettings" class="subsettings">
+          <label>Format:
+          <select id="exportFormat">
+            <option value="JSON">JSON</option>
+            <option value="JavaScript">JavaScript</option>
+          </select></label>
+          <br>
+          <label>File Name:<br>
+          <input type="text" id="blockDef_filename"></label>
+        </div>
+        <br>
+
+        <label><input type="checkbox" id="genStubCheck">Generator Stub(s)</label><br>
+        <div id="genStubSettings" class="subsettings">
+          <label>Language:
+          <select id="exportLanguage">
+            <option value="JavaScript">JavaScript</option>
+            <option value="Python">Python</option>
+            <option value="PHP">PHP</option>
+            <option value="Lua">Lua</option>
+            <option value="Dart">Dart</option>
+          </select></label>
+          <br>
+          <label>File Name:<br>
+          <input type="text" id="generatorStub_filename"></label><br>
+        </div>
+        <br>
+      </form>
+      <button id="exporterSubmitButton" title="Download block starter code as specified in export settings.">Export</button>
+    </div>
+    <div id="exportPreview">
+      <br>
+      <h3>Export Preview</h3>
+      <div id="blockDefs" class="exportPreviewTextArea">
+        <p id="blockDefs_label">Block Definitions:</p>
+        <pre id="blockDefs_textArea"></pre>
+      </div>
+      <div id="genStubs" class="exportPreviewTextArea">
+        <p id="genStubs_label">Generator Stubs:</p>
+        <pre id="genStubs_textArea"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Workspace Factory tab -->
+
+  <div id="workspaceFactoryContent">
+    <div id="factoryHeader" style="display:none;">
+      <p>
+        <div class="dropdown">
+        <button id="button_importBlocks">Import Custom Blocks</button>
+          <div id="dropdownDiv_importBlocks" class="dropdown-content">
+            <input type="file" id="input_importBlocksJson" accept=".js, .json, .txt" class="inputfile">
+            <label for="input_importBlocksJson">From JSON</label>
+            <input type="file" id="input_importBlocksJs" accept=".js, .txt" class="inputfile">
+            <label for="input_importBlocksJs">From Javascript</label>
+          </div>
+        </div>
+
+        <div class="dropdown">
+        <button id="button_load">Load to Edit</button>
+          <div id="dropdownDiv_load" class="dropdown-content">
+            <input type="file" id="input_loadToolbox" accept=".xml" class="inputfile">
+            <label for="input_loadToolbox">Toolbox</label>
+            <input type="file" id="input_loadPreload" accept=".xml" class="inputfile">
+            <label for="input_loadPreload">Workspace Blocks</label>
+          </div>
+        </div>
+
+        <div class="dropdown">
+        <button id="button_export">Export</button>
+          <div id="dropdownDiv_export" class="dropdown-content">
+            <a id="dropdown_exportOptions">Starter Code</a>
+            <a id="dropdown_exportToolbox">Toolbox</a>
+            <a id="dropdown_exportPreload">Workspace Blocks</a>
+            <a id="dropdown_exportAll">All</a>
+          </div>
+        </div>
+
+        <button id="button_clear">Clear</button>
+      </p>
+    </div>
+
+    <section id="createDiv">
+      <div id="createHeader">
+        <h3>Rule create
+          <!-- here DIPS to execute the rule -->
+          <button id="executetounity" title="Send rules to unity.">
+            <span>Save</span>
+          </button>
+        </h3>
+        <p id="editHelpText">Drag blocks into the workspace to configure the toolbox in your custom workspace.</p>
+      </div>
+
+      <table id="workspaceTabs" style="width:auto; height:auto">
+        <tr>
+          <td id="tab_toolbox" class="tabon">Toolbox</td>
+          <td id="tab_preload" class="taboff" style="display:none;">Workspace</td>
+        </tr>
+      </table>
+      <section id="toolbox_section">
+        <div id="toolbox_blocks"></div>
+      </section>
+      <aside id="toolbox_div" style="display:none;">
+        <p style="display:none;" id="categoryHeader">You currently have no categories.</p>
+        <table id="categoryTable" style="width:auto; height:auto; display:none;">
+        </table>
+        <p>&nbsp;</p>
+
+        <div style="display:none;" class="dropdown">
+          <button id="button_add" class="large">+</button>
+          <div id="dropdownDiv_add" class="dropdown-content">
+            <a id="dropdown_newCategory">New Category</a>
+            <a id="dropdown_loadCategory">Standard Category</a>
+            <a id="dropdown_separator">Separator</a>
+            <a id="dropdown_loadStandardToolbox">Standard Toolbox</a>
+          </div>
+        </div>
+        <button style="display:none;" id="button_remove" class="large">-</button>
+        <button style="display:none;" id="button_up" class="large">&#8593;</button>
+        <button style="display:none;" id="button_down" class="large">&#8595;</button>
+
+        <br>
+        <div style="display:none;" class="dropdown">
+          <button id="button_editCategory">Edit Category</button>
+          <div id="dropdownDiv_editCategory" class="dropdown-content">
+            <a id='dropdown_name'>Name</a>
+            <a id='dropdown_color'>Colour</a>
+          </div>
+        </div>
+      </aside>
+
+      <button id="button_addShadow" style="display:none">Make Shadow</button>
+      <button id="button_removeShadow" style="display:none">Remove Shadow</button>
+
+      <aside id="preload_div" style="display:none">
+        <div id="preloadHelp" style="display:none">
+          <p>Configure the options for your Blockly inject call.</p>
+          <button id="button_optionsHelp">Help</button>
+          <button class="small" id="button_standardOptions">Reset to Default</button>
+        </div>
+        <div style="display:none" id="workspace_options">
+          <label><input type="checkbox" id="option_readOnly_checkbox" class="optionsInput">Read Only</label><br>
+          <div id="readonly1">
+            <label><input type="checkbox" id="option_collapse_checkbox" class="optionsInput">Collapsible Blocks</label><br>
+          </div>
+          <div id="readonly2">
+            <label><input type="checkbox" id="option_comments_checkbox" class="optionsInput">Comments for Blocks</label><br>
+          </div>
+          <label><input type="checkbox" id="option_css_checkbox" class="optionsInput">Use Blockly CSS</label><br>
+          <div id="readonly3">
+            <label><input type="checkbox" id="option_disable_checkbox" class="optionsInput">Disabled Blocks</label><br>
+          </div>
+          <label><input type="checkbox" id="option_grid_checkbox" class="optionsInput">Use Grid</label><br>
+          <div id="grid_options" name="grid" style="display: none">
+            <label>Spacing <input type="number" id="gridOption_spacing_number" class="optionsInput" value="0"></label><br>
+            <label>Length <input type="number" id="gridOption_length_number" class="optionsInput" value="1"></label><br>
+            <label>Colour <input type="text" id="gridOption_colour_text" class="optionsInput" value="#888"></label><br>
+            <label><input type="checkbox" id="gridOption_snap_checkbox" class="optionsInput" value="grid_snap_checkbox">Snap</label><br>
+          </div>
+          <div id="readonly4">
+            <label><input type="checkbox" id="option_infiniteBlocks_checkbox" class="optionsInput" value="checked">Infinite Blocks</label><br>
+            <div id="maxBlockNumber_option" style="display: none">
+              <label>Max Blocks <input type="number" id="option_maxBlocks_number" class="optionsInput" value=100></label><br>
+            </div>
+          </div>
+          <label>Path to Blockly Media <input type="text" id="option_media_text" class="optionsInput"></label><br>
+          <label><input type="checkbox" id="option_rtl_checkbox" class="optionsInput">Layout with RTL</label><br>
+          <label><input type="checkbox" id="option_scrollbars_checkbox" class="optionsInput">Scrollbars</label><br>
+          <div id="readonly5">
+            <label><input type="checkbox" id="option_sounds_checkbox" class="optionsInput">Sounds</label><br>
+          </div>
+          <div id="readonly6">
+            <label><input type="checkbox" id="option_trashcan_checkbox" class="optionsInput">Trashcan</label><br>
+          </div>
+          <div id="readonly7">
+            <label><input type="checkbox" id="option_zoom_checkbox" class="optionsInput">Zoom</label><br>
+            <div id="zoom_options" name="zoom" style="display: none">
+              <label><input type="checkbox" id="zoomOption_controls_checkbox" class="optionsInput">Zoom Controls</label><br>
+              <label><input type="checkbox" id="zoomOption_wheel_checkbox" class="optionsInput">Zoom Wheel</label><br>
+              <label>Start Scale <input type="number" id="zoomOption_startScale_number" class="optionsInput" name="startScale" value="1.0"></label><br>
+              <label>Max Scale <input type="number" id="zoomOption_maxScale_number" class="optionsInput" value="3"></label><br>
+              <label>Min Scale <input type="number" id="zoomOption_minScale_number" class="optionsInput" value="0.3"></label><br>
+              <label>Scale Speed <input type="number" id="zoomOption_scaleSpeed_number" class="optionsInput" value="1.2"></label><br>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <aside id="previewDiv" style="display: none">
+      <div id="previewBorder">
+        <div id="previewHelp">
+          <h3>Rule Creating
+          <!-- <button id="executetounity" title="Send rules to unity.">
+            <span>Execute</span>
+          </button> -->
+          </h3>
+        </div>
+        <div id="preview_blocks" class="content"></div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Blockly Factory Tab -->
+  <table id="blockFactoryContent">
+    <tr width="100%" height="10%">
+      <td width="50%" height="5%">
+        <table>
+          <tr id="blockLibrary">
+            <td id="blockLibraryContainer">
+            <span>
+              <div class="dropdown">
+                <button id="button_blockLib">Block Library</button>
+                <div id="dropdownDiv_blockLib" class="dropdown-content">
+                  <a id="createNewBlockButton">Create New Block</a>
+                </div>
+              </div>
+              <select id="blockLibraryDropdown" style="display:none">
+              </select>
+            </span>
+            </td>
+            <td id="blockLibraryControls">
+            <button id="saveToBlockLibraryButton" title="Save block to Block Library.">
+              Save "block_type"
+            </button>
+            <button id="removeBlockFromLibraryButton" title="Remove block from Block Library.">
+              Delete "block_type"
+            </button>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td height="5%">
+        <table id="blockFactoryPreview">
+          <tr>
+            <td style="visibility:hidden;" id="previewContainer">
+              <h3>Preview:
+                <select style="visibility:hidden;" id="direction">
+                  <option value="ltr">LTR</option>
+                  <option value="rtl">RTL</option>
+                </select>
+              </h3>
+            </td>
+            <td id="buttonContainer">
+              <button id="linkButton" title="Save and link to blocks.">
+                <img src="forStoryEditing/link.png" height="21" width="21">
+              </button>
+              <button id="clearBlockLibraryButton" title="Clear Block Library.">
+                <span>Clear Library</span>
+              </button>
+              <label for="files" class="buttonStyle" style="display:none;">
+                <span class=>Import Block Library</span>
+              </label>
+              <input id="files" type="file" name="files" accept="application/xml" style="display:none;">
+              <button id="localSaveButton" title="Save block library XML to a local file." style="display:none;">
+                <span>Download Block Library</span>
+              </button>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td id="blocklyWorkspaceContainer">
+        <div id="blockly"></div>
+        <div id="blocklyMask"></div>
+      </td>
+      <td width="40%">
+        <table id="blocklyPreviewContainer">
+          <tr height="90%">
+            <td><h3 id="previewheight">Block Creating:</h3>
+              <div id="preview"></div>
+            </td>
+          </tr>
+          <tr>
+          <!-- here to alert blocktocode -->
+            <td style="display:none" height="5%">
+              <h3>Block Definition:
+                <select style="display:none" id="format">
+                  <option value="JSON">JSON</option>
+                  <option value="JavaScript">JavaScript</option>
+                  <option value="Manual">Manual edit&hellip;</option>
+                </select>
+              </h3>
+            </td>
+          </tr>
+          <tr>
+            <td style="display:none" height="30%">
+              <pre id="languagePre"></pre>
+              <textarea id="languageTA"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td style="visibility:hidden;" height="5%">
+              <h3>Generator stub:
+                <select id="language">
+                  <option value="JavaScript">JavaScript</option>
+                  <option value="Python">Python</option>
+                  <option value="PHP">PHP</option>
+                  <option value="Lua">Lua</option>
+                  <option value="Dart">Dart</option>
+                </select>
+              </h3>
+            </td>
+          </tr>
+          <tr>
+            <td style="visibility:hidden;" height="30%">
+              <pre id="generatorPre"></pre>
+            </td>
+          </tr>
+        </table>
+      </td>
+      </tr>
+  </table>
+
+  <table id="objectsProperties">
+    <tr width="100%" height="10%">
+      <td width="50%" height="5%">
+        <table>
+          <tr id="blockLibrary">
+            <td id="blockLibraryContainer">
+            <span>
+              <div class="dropdown">
+                <button id="button_blockLib">Block Library</button>
+                <div id="dropdownDiv_blockLib" class="dropdown-content">
+                  <a id="createNewBlockButton">Create New Block</a>
+                </div>
+              </div>
+              <select id="blockLibraryDropdown" style="display:none">
+              </select>
+            </span>
+            </td>
+            <td id="blockLibraryControls">
+            <button style="display:none" id="saveToBlockLibraryButton" title="Save block to Block Library.">
+              Save "block_type"
+            </button>
+            <button style="display:none" id="removeBlockFromLibraryButton" title="Remove block from Block Library.">
+              Delete "block_type"
+            </button>
+            </td>
+          </tr>
+        </table>
+      </td>
+
+    </tr>
+    <tr height="80%">
+      <td id="blocklyWorkspaceContainer">
+        <div id="blockly"></div>
+        <div id="blocklyMask"></div>
+      </td>
+      <td width="50%">
+        <table id="blocklyPreviewContainer">
+          <tr>
+            <td height="30%">
+              <div id="preview"></div>
+            </td>
+          </tr>
+        </table>
+      </td>
+      </tr>
+  </table>
+
+  <div id="modalShadow"></div>
+  <script type="text/javascript">
+
+  </script>
+
+  <xml id="blockfactory_toolbox" class="toolbox">
+    <category name="Input">
+      <block type="input_dummy"></block>
+      <!-- <block type="input_statement"></block> -->
+    </category>
+    <category name="Field">
+      <block type="field_static"></block>
+      <block type="field_image"></block>
+    </category>
+    <category name="Colour" id="colourCategory">
+      <block type="colour_hue"><mutation colour="20"></mutation><field name="HUE">20</field></block>
+      <block type="colour_hue"><mutation colour="65"></mutation><field name="HUE">65</field></block>
+      <block type="colour_hue"><mutation colour="120"></mutation><field name="HUE">120</field></block>
+      <block type="colour_hue"><mutation colour="160"></mutation><field name="HUE">160</field></block>
+      <block type="colour_hue"><mutation colour="210"></mutation><field name="HUE">210</field></block>
+      <block type="colour_hue"><mutation colour="230"></mutation><field name="HUE">230</field></block>
+      <block type="colour_hue"><mutation colour="260"></mutation><field name="HUE">260</field></block>
+      <block type="colour_hue"><mutation colour="290"></mutation><field name="HUE">290</field></block>
+      <block type="colour_hue"><mutation colour="330"></mutation><field name="HUE">330</field></block>
+    </category>
+    <sep></sep>
+
+    <category name="Character" id="ch">
+      
+    </category>
+
+
+    <category name="3D Character" id="d_ch">
+      <script type="text/javascript">
+
+      </script>
+      <!-- <block type = "ExampleCharacter"></block>
+      <block type = "pepper"></block> -->
+    </category>
+
+     <category name="Preset" id="pr">
+       <script>
+       var mes_pr = '{"message_type":"preset_object_list","items":[{"object_name":"GoldBall"},{"object_name":"SimpleCube"},{"object_name":"TreeObject"},{"object_name":"Explosion"},{"object_name":"Rainbow"},{"object_name":"Flame"},{"object_name":"Fish-1"},{"object_name":"Fish-2"}, {"object_name":"WhiteSmoke"}]}';
+       mes_pr = JSON.parse(mes_pr);
+       var pre_objs_length = mes_pr.items.length;
+       var p = "";
+       for (var i = 0; i < pre_objs_length; i++) {
+         presetname = mes_pr.items[i]["object_name"];
+         p += '<block type="'+presetname+'"></block>';
+         var pp = '';
+         pp+= eval('Blockly.Blocks["'+presetname+'"] = {'+
+             'init: function() {'+
+             // 'this.appendValueInput("Field").setCheck(null).appendField("'+ effectsArray[i] +'");'+
+               'this.appendDummyInput()'+
+               '.appendField("'+ presetname +':");'+
+               'this.appendDummyInput().appendField("  position(x=")'+
+               '.appendField(new Blockly.FieldNumber("0.0"), "position_x")'+
+               '.appendField(", y=")'+
+               '.appendField(new Blockly.FieldNumber("0.0"), "position_y")'+
+               '.appendField(", z=")'+
+               '.appendField(new Blockly.FieldNumber("0.0"), "position_z")'+
+               '.appendField(")");'+
+               'this.appendDummyInput().appendField("  initStatus = ")'+
+               '.appendField(new Blockly.FieldDropdown([["Visible","true"], ["Invisible","false"]]), "initStatus");'+
+               'this.setPreviousStatement(true, "Field");'+
+               'this.setNextStatement(true, "Field");'+
+               'this.setColour(265);'+
+               'this.setTooltip("Preset Object");'+
+             '}};');
+       }
+       document.write(p);
+       </script>
+    </category>
+
+
+    <category name="Background" id="bg">
+      <script>
+     
+      </script>
+    </category>
+  </xml>
+
+
+  <xml id="workspacefactory_toolbox" class="toolbox">
+    <!-- <category name="Logic" colour="210">
+      <block type="controls_if"></block>
+    </category> -->
+    <!-- <category name="Logic" colour="210">
+      <block type="logic_compare"></block>
+    </category> -->
+    <category name="Frame Libs" colour="20">
+      <script type="text/javascript">
+        frame_insert();
+      </script>
+    </category>
+    <category name="Cues" colour="70">
+      <script type="text/javascript">
+        cue_insert();
+      </script>
+
+      <!-- <block type="righthandup"></block>
+      <block type="lefthandup"></block> -->
+    </category>
+    <category name="Effects" colour="110">
+      <script type="text/javascript">
+        effect_insert();
+      </script>
+    </category>
+    <category name="EffectObject" colour="200">
+      <script>
+        preset_insert();
+      </script>
+    </category>
+    <category name="AudioObject" colour="300">
+      <script>
+        audio_insert();
+      </script>
+    </category>
+    <category name="nodesObject" colour="240">
+      <script type="text/javascript">
+        node_insert();
+      </script>
+    </category>
+    <category name="doObject" colour="160">
+      <script type="text/javascript">
+        event_insert();
+      </script>
+    </category>
+
+    <sep></sep>
+    <category name="Block Library" colour="260" id="blockLibCategory"></category>
+  </xml>
+
+<script type="text/javascript">
+        let obj = {};
+        obj.token =token;
+
+        let url = "http://192.168.50.161:8080/wise/dips/Object";
+        let method = "POST";
+        let async = true;
+        let request = new XMLHttpRequest();
+          request.onload = function () {
+          let status = request.status; // HTTP response status, e.g., 200 for "200 OK"
+          let data = request.responseText; // Returned data, e.g., an HTML document.
+          let urls=JSON.parse(data);
+          let url=urls.toString().split(',');
+          
+          for(let i=0; i<url.length ; i++){
+            $.ajax({
+              url:"http://192.168.50.161:8080"+url[i],
+              method: 'GET',
+              cache: false,
+              success:function(data_o){
+                let name=JSON.parse(data_o).imgName;
+                let type=JSON.parse(data_o).objType;
+                console.log("Name=\t"+name);
+                if(type=="paperman"){
+                  let c = "";
+                  c += '<block type="'+name+'"></block>';
+                  let cc = '';
+                  cc+= eval('Blockly.Blocks["'+name+'"] = {'+
+                      'init: function() {'+
+                    // 'this.appendValueInput("Field").setCheck(null).appendField("'+ effectsArray[i] +'");'+
+                      'this.appendDummyInput()'+
+                      '.appendField(new Blockly.FieldImage("http://192.168.50.161:8080/dips/user1/Image/'+name+'.png", 40, 40))'+
+                      '.appendField("'+ name +':");'+
+                      'this.appendDummyInput().appendField("  position(x=")'+
+                      '.appendField(new Blockly.FieldNumber("0.0"), "position_x")'+
+                      '.appendField(", y=")'+
+                      '.appendField(new Blockly.FieldNumber("0.0"), "position_y")'+
+                      '.appendField(", z=")'+
+                      '.appendField(new Blockly.FieldNumber("0.0"), "position_z")'+
+                      '.appendField(")");'+
+                      'this.appendDummyInput().appendField("  topic name=")'+
+                      '.appendField(new Blockly.FieldTextInput("mocap-data-01"), "dataTopic");'+
+                      'this.appendDummyInput().appendField("  initStatus = ")'+
+                      '.appendField(new Blockly.FieldDropdown([["Visible","true"], ["Invisible","false"]]), "initStatus");'+
+                      'this.setPreviousStatement(true, "Field");'+
+                      'this.setNextStatement(true, "Field");'+
+                      'this.setColour(65);'+
+                      'this.setTooltip("角色元件");'+
+                    '}};');
+                    $('#ch').append(c);
+                }else if(type=="cubeman"){
+
+                  let c = "";
+                  c += '<block type="'+name+'"></block>';
+                  let cc = '';
+                        cc+= eval('Blockly.Blocks["'+name+'"] = {'+
+                        'init: function() {'+
+                        // 'this.appendValueInput("Field").setCheck(null).appendField("'+ effectsArray[i] +'");'+
+                          'this.appendDummyInput()'+
+                          '.appendField(new Blockly.FieldImage("http://192.168.50.161:8080/dips/user1/Image/'+name+'.png", 40, 40))'+
+                          '.appendField("'+ name +':");'+
+                          'this.appendDummyInput().appendField("  position(x=")'+
+                          '.appendField(new Blockly.FieldNumber("0.0"), "position_x")'+
+                          '.appendField(", y=")'+
+                          '.appendField(new Blockly.FieldNumber("0.0"), "position_y")'+
+                          '.appendField(", z=")'+
+                          '.appendField(new Blockly.FieldNumber("0.0"), "position_z")'+
+                          '.appendField(")");'+
+                          'this.appendDummyInput().appendField("  topic name=")'+
+                          '.appendField(new Blockly.FieldTextInput("mocap-data-01"), "dataTopic");'+
+                          'this.appendDummyInput().appendField("  initStatus = ")'+
+                          '.appendField(new Blockly.FieldDropdown([["Visible","true"], ["Invisible","false"]]), "initStatus");'+
+                          'this.setPreviousStatement(true, "Field");'+
+                          'this.setNextStatement(true, "Field");'+
+                          'this.setColour(265);'+
+                          'this.setTooltip("角色元件");'+
+                        '}};');
+                    $('#d_ch').append(c);
+                }else if(type=="Background"){
+                	let b="";
+                	b +='<block type="'+name+'"></block>';
+			        let bb = '';
+			        bb+= eval('Blockly.Blocks["'+name+'"] = {'+
+			              'init: function() {this.appendDummyInput()'+
+			              '.appendField(new Blockly.FieldImage("http://192.168.50.161:8080/dips/user1/Image/'+name+'.jpg", 60, 40))'+
+			              '.appendField("'+ name +'");'+
+			              'this.appendDummyInput().appendField("  initStatus = ")'+
+			              '.appendField(new Blockly.FieldDropdown([["Visible","true"], ["Invisible","false"]]), "initStatus");'+
+			                'this.setPreviousStatement(true, "Field");'+
+			                'this.setNextStatement(true, "Field");'+
+			                'this.setColour(180);'+
+			                'this.setTooltip("Background Object");'+
+			              '}};');
+			        $('#bg').append(b);
+
+                }
+                
+                
+                // console.log(cc);
+
+                // document.append(c);
+              }
+                           
+            });            
+          }
+          // console.log("url=\t"+urls);
+        
+        }
+        request.open(method, url, async);
+        request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        request.send(JSON.stringify(obj));
+
+      </script>
+
+
+
+
+  <script>
+
+    function initStart() {
+      globalToolBoxInit();
+    }
+    function clickdemoExe() {
+      window.location.href = "http://192.168.50.161:8080/rewrite/project/demoEXE.html?token="+token;
+    }
+  </script>
+
+</body>
+</html>

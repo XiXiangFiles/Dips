@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<title>Document</title>
+	<div class="result"></div>
+</head>
+<body>
+	<script>
+		$.get( "http://140.119.163.193:8080/wise/dips", function( data ) {
+			console.log(data);
+  			$( ".result" ).html( data );
+  			// alert( "Load was performed." );
+		});
+	</script>
+	
+</body>
+</html>
